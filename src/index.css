@@ -5,6 +5,138 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  cursor: none; /* Hide default cursor */
+}
+
+/* Custom cursor styles */
+.custom-cursor {
+  position: fixed;
+  width: 32px;
+  height: 32px;
+  background: radial-gradient(circle, #00ffff 0%, #0080ff 50%, #0040ff 100%);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 9999;
+  transition: none;
+  box-shadow: 
+    0 0 20px rgba(0, 255, 255, 0.8),
+    inset 0 0 10px rgba(255, 255, 255, 0.5);
+  border: 2px solid #00ffff;
+  animation: lightning-pulse 2s infinite;
+}
+
+.custom-cursor::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 12px;
+  height: 12px;
+  background: linear-gradient(45deg, #fff, #00ffff);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  box-shadow: 0 0 15px rgba(0, 255, 255, 1);
+  animation: lightning-core 1.5s infinite;
+}
+
+/* Lightning sword cursor */
+.lightning-sword {
+  position: fixed;
+  width: 40px;
+  height: 40px;
+  pointer-events: none;
+  z-index: 9999;
+  transition: opacity 0.1s ease;
+  opacity: 0;
+  transform: scale(1);
+  filter: drop-shadow(0 4px 8px rgba(0, 255, 255, 0.6));
+  animation: sword-float 3s ease-in-out infinite;
+}
+
+.lightning-sword svg {
+  width: 100%;
+  height: 100%;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+}
+
+/* Show lightning sword on hover */
+body:hover .lightning-sword {
+  opacity: 1;
+  transform: scale(1);
+}
+
+/* Hide custom cursor on hover */
+body:hover .custom-cursor {
+  opacity: 0;
+  transform: scale(1);
+}
+
+/* Lightning animations */
+@keyframes lightning-pulse {
+  0%, 100% { 
+    box-shadow: 
+      0 0 20px rgba(0, 255, 255, 0.8),
+      inset 0 0 10px rgba(255, 255, 255, 0.5);
+  }
+  50% { 
+    box-shadow: 
+      0 0 30px rgba(0, 255, 255, 1),
+      0 0 40px rgba(0, 255, 255, 0.6),
+      inset 0 0 15px rgba(255, 255, 255, 0.8);
+  }
+}
+
+@keyframes lightning-core {
+  0%, 100% { 
+    box-shadow: 0 0 15px rgba(0, 255, 255, 1);
+    transform: translate(-50%, -50%) scale(1);
+  }
+  50% { 
+    box-shadow: 0 0 25px rgba(0, 255, 255, 1.5);
+    transform: translate(-50%, -50%) scale(1.2);
+  }
+}
+
+@keyframes sword-float {
+  0%, 100% { 
+    transform: translateY(0px) rotate(0deg);
+    filter: drop-shadow(0 4px 8px rgba(0, 255, 255, 0.6));
+  }
+  50% { 
+    transform: translateY(-3px) rotate(1deg);
+    filter: drop-shadow(0 6px 12px rgba(0, 255, 255, 0.8));
+  }
+}
+
+/* Lightning bolt effect */
+.lightning-bolt {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(45deg, transparent 30%, rgba(0, 255, 255, 0.8) 50%, transparent 70%);
+  animation: lightning-bolt 2s infinite;
+  pointer-events: none;
+}
+
+@keyframes lightning-bolt {
+  0%, 100% { opacity: 0; transform: scale(0.8); }
+  50% { opacity: 1; transform: scale(1.2); }
+}
+
+/* Cursor glow effect */
+.custom-cursor:hover,
+.lightning-sword:hover {
+  filter: brightness(1.3) drop-shadow(0 0 20px rgba(0, 255, 255, 1));
+}
+
+/* Interactive elements cursor */
+a, button, [role="button"], input, textarea, select {
+  cursor: none;
+}
+
+/* Hover effects for interactive elements */
+a:hover, button:hover, [role="button"]:hover {
+  cursor: none;
 }
 
 code {
