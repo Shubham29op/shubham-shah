@@ -235,37 +235,38 @@ const payload = {
         }
     };
 
-    const callHuggingFaceAPI = async (chatHistory) => {
+    const callLocalChatbot = async (chatHistory) => {
         setIsLoading(true);
-
-        const apiKey = process.env.REACT_APP_HF_API_KEY;
-        const apiUrl = "https://api-inference.huggingface.co/models/google/gemma-3-270m"; // Updated model
-
-        // Combine chat history into a single prompt
-        const prompt = chatHistory.map(msg => `${msg.role === "user" ? "User" : "Assistant"}: ${msg.text}`).join("\n") + "\nAssistant:";
-
-        try {
-            const response = await fetch(apiUrl, {
-                method: "POST",
-                headers: {
-                    "Authorization": `Bearer ${apiKey}`,
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({ inputs: prompt })
-            });
-            if (!response.ok) throw new Error(`API call failed with status: ${response.status}`);
-            const result = await response.json();
-            // Hugging Face returns an array with 'generated_text'
-            const modelResponse = Array.isArray(result) && result[0]?.generated_text
-                ? result[0].generated_text
-                : "Sorry, I couldn't get a response. Please try again.";
-            setMessages(prev => [...prev, { role: 'model', text: modelResponse }]);
-        } catch (error) {
-            console.error("Hugging Face API call error:", error);
-            setMessages(prev => [...prev, { role: 'model', text: "Sorry, something went wrong. Please check the console for details." }]);
-        } finally {
-            setIsLoading(false);
+        
+        // Simulate API delay for realistic feel
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        
+        const userMessage = chatHistory[chatHistory.length - 1].text.toLowerCase();
+        let response = "";
+        
+        // Rule-based responses based on portfolio data
+        if (userMessage.includes("skill") || userMessage.includes("technology") || userMessage.includes("tech")) {
+            response = `Shubham has strong technical skills including:\n\n• Python (95% proficiency)\n• SQL (90% proficiency)\n• JavaScript (90% proficiency)\n• ReactJS (80% proficiency)\n• Machine Learning (100% proficiency)\n• Fast API (90% proficiency)\n\nHe also excels in soft skills like Communication, Leadership, Problem Solving, and Project Management.`;
+        } else if (userMessage.includes("experience") || userMessage.includes("work") || userMessage.includes("job")) {
+            response = `Shubham's work experience includes:\n\n• Product Developer at Data Acies, Texas (Jun 2025 - Present)\n• Backend Engineer Intern at SpacECE, Pune (Jan 2025 - Feb 2025)\n• Project Developer at All World Gayatri Pariwar (Aug 2024 - Nov 2024)\n• Cloud Machine Learning Intern at Azure Development Community (June 2024)\n\nHe has experience in AI-powered features, RESTful APIs, and full-stack development.`;
+        } else if (userMessage.includes("project") || userMessage.includes("portfolio")) {
+            response = `Shubham has worked on several impressive projects:\n\n• Civic-Circle: NGO Volunteer Platform (96% ML accuracy)\n• AI PrepGem: Interview Platform with LLMs\n• Smart Object Dimensioning System (±2.5% accuracy)\n• GEO Todo List Mobile App\n• Book Stock Pro Website\n\nAll projects showcase his expertise in MERN stack, Python, and machine learning.`;
+        } else if (userMessage.includes("education") || userMessage.includes("degree") || userMessage.includes("university")) {
+            response = `Shubham's education:\n\n• B.Tech in Computer Engineering at K J Somaiya Institute of Technology (8.56 GPA)\n• HSC (12th Grade) at AAVP Junior College (71%)\n• ICSE (10th Grade) at Smt. Nanavati English High School (93.80%)\n\nHe's currently pursuing his degree with honors in Data Science.`;
+        } else if (userMessage.includes("contact") || userMessage.includes("email") || userMessage.includes("phone")) {
+            response = `You can reach Shubham at:\n\n• Email: shubhamshah2908@gmail.com\n• Phone: +91 7977775701\n• Location: Mumbai, India\n• LinkedIn: https://www.linkedin.com/in/shubham-shah29\n• GitHub: https://github.com/Shubham29op`;
+        } else if (userMessage.includes("resume") || userMessage.includes("cv")) {
+            response = `You can download Shubham's resume from the "Download Resume" button on the homepage. It contains detailed information about his skills, experience, and projects.`;
+        } else if (userMessage.includes("hello") || userMessage.includes("hi") || userMessage.includes("hey")) {
+            response = `Hello! I'm Spark, Shubham's AI assistant. I can help you learn about his skills, experience, projects, education, and contact information. What would you like to know?`;
+        } else if (userMessage.includes("about") || userMessage.includes("who")) {
+            response = `Shubham Shah is a proactive Computer Engineering student specializing in Data Science. He's a Full Stack Developer, Data Engineer, and Product Developer with expertise in Python, SQL, ETL processes, backend development, and machine learning. He's ready to build scalable data pipelines and innovative solutions.`;
+        } else {
+            response = `I'm here to help you learn about Shubham! You can ask me about:\n\n• His technical and soft skills\n• Work experience and internships\n• Projects and portfolio\n• Education and academic background\n• Contact information\n• Resume download\n\nWhat would you like to know?`;
         }
+        
+        setMessages(prev => [...prev, { role: 'model', text: response }]);
+        setIsLoading(false);
     };
 
     const handleSendMessage = (e) => {
@@ -275,7 +276,7 @@ const payload = {
         const newMessages = [...messages, userMessage];
         setMessages(newMessages);
         setInput('');
-        callHuggingFaceAPI(newMessages);
+        callLocalChatbot(newMessages);
     };
 
     React.useEffect(() => {
@@ -350,6 +351,123 @@ const AnimatedBackground = () => {
     return () => { window.removeEventListener('resize', resizeCanvas); cancelAnimationFrame(animationId); };
   }, []);
   return <canvas ref={canvasRef} className="fixed inset-0 z-0 bg-gradient-to-br from-gray-900 via-purple-900 to-blue-900" />;
+};
+
+/**
+ * Custom Cursor Component with Lightning Sword
+ */
+const CustomCursor = () => {
+  const cursorRef = React.useRef(null);
+  const swordRef = React.useRef(null);
+  const [isHovering, setIsHovering] = React.useState(false);
+
+  React.useEffect(() => {
+    const cursor = cursorRef.current;
+    const sword = swordRef.current;
+    
+    if (!cursor || !sword) return;
+
+    const updateCursor = (e) => {
+      // Use simple positioning for reliable movement
+      cursor.style.left = (e.clientX - 16) + 'px';
+      cursor.style.top = (e.clientY - 16) + 'px';
+      sword.style.left = (e.clientX - 20) + 'px';
+      sword.style.top = (e.clientY - 20) + 'px';
+    };
+
+    const handleMouseEnter = () => setIsHovering(true);
+    const handleMouseLeave = () => setIsHovering(false);
+
+    // Use passive listeners for better performance
+    document.addEventListener('mousemove', updateCursor, { passive: true });
+    document.addEventListener('mouseenter', handleMouseEnter, { passive: true });
+    document.addEventListener('mouseleave', handleMouseLeave, { passive: true });
+
+    return () => {
+      document.removeEventListener('mousemove', updateCursor);
+      document.removeEventListener('mouseenter', handleMouseEnter);
+      document.removeEventListener('mouseleave', handleMouseLeave);
+    };
+  }, []);
+
+  return (
+    <>
+      <div ref={cursorRef} className="custom-cursor" style={{ opacity: isHovering ? 0 : 1 }} />
+      <div ref={swordRef} className="lightning-sword" style={{ opacity: isHovering ? 1 : 0 }}>
+        <div className="lightning-bolt"></div>
+        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ transform: 'rotate(-45deg)' }}>
+          {/* Diagonal Sword Blade */}
+          <path 
+            d="M6 6L18 18M8 8L16 8M8 10L16 10M8 12L16 12" 
+            stroke="url(#lightningGradient)" 
+            strokeWidth="2" 
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            filter="url(#lightningGlow)"
+          />
+          {/* Sword Handle */}
+          <path 
+            d="M16 18L20 18M17 18L17 20M19 18L19 20" 
+            stroke="url(#handleGradient)" 
+            strokeWidth="2" 
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+          {/* Sword Tip */}
+          <path 
+            d="M6 6L4 4L8 4L6 6Z" 
+            fill="url(#lightningGradient)"
+            filter="url(#lightningGlow)"
+          />
+          {/* Lightning Effects */}
+          <path 
+            d="M7 7L6 5M9 9L10 7M11 11L10 9M13 13L14 11" 
+            stroke="url(#lightningBolt)" 
+            strokeWidth="1" 
+            strokeLinecap="round"
+            opacity="0.8"
+          />
+          {/* Energy Aura */}
+          <circle 
+            cx="12" 
+            cy="12" 
+            r="10" 
+            stroke="url(#energyAura)" 
+            strokeWidth="0.5" 
+            fill="none"
+            opacity="0.3"
+          />
+          <defs>
+            <linearGradient id="lightningGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stopColor="#00ffff" />
+              <stop offset="50%" stopColor="#0080ff" />
+              <stop offset="100%" stopColor="#0040ff" />
+            </linearGradient>
+            <linearGradient id="lightningBolt" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stopColor="#ffffff" />
+              <stop offset="100%" stopColor="#00ffff" />
+            </linearGradient>
+            <linearGradient id="energyAura" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stopColor="#00ffff" />
+              <stop offset="50%" stopColor="#0080ff" />
+              <stop offset="100%" stopColor="transparent" />
+            </linearGradient>
+            <linearGradient id="handleGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stopColor="#2c1810" />
+              <stop offset="100%" stopColor="#4a2c1a" />
+            </linearGradient>
+            <filter id="lightningGlow">
+              <feGaussianBlur stdDeviation="1" result="coloredBlur"/>
+              <feMerge> 
+                <feMergeNode in="coloredBlur"/>
+                <feMergeNode in="SourceGraphic"/>
+              </feMerge>
+            </filter>
+          </defs>
+        </svg>
+      </div>
+    </>
+  );
 };
 
 const Section = ({ id, children, className = '' }) => (
@@ -607,6 +725,7 @@ const Portfolio = () => {
 
   return (
     <div className="relative min-h-screen bg-gray-900 text-white overflow-x-hidden font-sans">
+      <CustomCursor />
       <AnimatedBackground />
       <Navbar activeSection={activeSection} scrollToSection={scrollToSection} />
       <main>
